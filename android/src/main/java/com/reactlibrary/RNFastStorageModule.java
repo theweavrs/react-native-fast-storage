@@ -5,6 +5,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.Callback;
 import com.tencent.mmkv.MMKV;
 
 public class RNFastStorageModule extends ReactContextBaseJavaModule {
@@ -27,53 +28,65 @@ public class RNFastStorageModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void setItem(String key, String value, Promise promise) {
+  public void setItem(String key, String value, Callback cb, Callback error) {
     try {
       MMKV kv = MMKV.defaultMMKV();
       kv.encode(key, value);
-      promise.resolve(value);
+      cb.invoke(value);
     } catch (Error e) {
-      promise.reject("Error", "Unable to setItem");
+      error.invoke("Unable to setItem");
     } catch (Exception e) {
-      promise.reject("Error", "Unable to setItem");
+      error.invoke("Unable to setItem");
     }
   }
 
   @ReactMethod
-  public void getItem(String key, Promise promise) {
+  public void getItem(String key, Callback cb, Callback error) {
     try {
       MMKV kv = MMKV.defaultMMKV();
-      promise.resolve(kv.decodeString(key));
+      cb.invoke(kv.decodeString(key));
     } catch (Error e) {
-      promise.reject("Error", "Unable to getItem");
+      error.invoke("Unable to getItem");
     } catch (Exception e) {
-      promise.reject("Error", "Unable to getItem");
+      error.invoke("Unable to getItem");
     }
   }
 
   @ReactMethod
-  public void removeItem(String key, Promise promise) {
+  public void containsKey(String key, Callback cb) {
+    try {
+      MMKV kv = MMKV.defaultMMKV();
+      cb.invoke(kv.containsKey(key));
+    } catch (Error e) {
+      error.invoke("Unable to check for key");
+    } catch (Exception e) {
+      error.invoke("Unable to check for key");
+    }
+  }
+
+  @ReactMethod
+  public void removeItem(String key, Callback cb, Callback error) {
     try {
       MMKV kv = MMKV.defaultMMKV();
       kv.removeValueForKey(key);
-      promise.resolve(key);
+      cb.invoke(key);
     } catch (Error e) {
-      promise.reject("Error", "Unable to removeItem");
+      error.invoke("Unable to removeItem");
     } catch (Exception e) {
-      promise.reject("Error", "Unable to removeItem");
+      error.invoke("Unable to removeItem");
     }
   }
 
   @ReactMethod
-  public void clearStore(Promise promise) {
+  public void clearStore(Callback cb, Callback error) {
     try {
       MMKV kv = MMKV.defaultMMKV();
       kv.clearAll();
-      promise.resolve("Done");
+      cb.invoke("Done");
     } catch (Error e) {
-      promise.reject("Error", "Unable to removeItem");
+      error.invoke("Unable to clear store");
     } catch (Exception e) {
-      promise.reject("Error", "Unable to removeItem");
+      error.invoke("Unable to clear store");
     }
   }
 }
