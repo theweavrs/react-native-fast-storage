@@ -28,27 +28,27 @@ public class RNFastStorageModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void setItem(String key, String value, Callback cb, Callback error) {
+  public void setItem(String key, String value, Callback cb) {
     try {
       MMKV kv = MMKV.defaultMMKV();
       kv.encode(key, value);
       cb.invoke(value);
     } catch (Error e) {
-      error.invoke("Unable to setItem");
+      cb.invoke("Error", "Unable to setItem");
     } catch (Exception e) {
-      error.invoke("Unable to setItem");
+      cb.invoke("Error", "Unable to setItem");
     }
   }
 
   @ReactMethod
-  public void getItem(String key, Callback cb, Callback error) {
+  public void getItem(String key, Callback cb) {
     try {
       MMKV kv = MMKV.defaultMMKV();
       cb.invoke(kv.decodeString(key));
     } catch (Error e) {
-      error.invoke("Unable to getItem");
+      cb.invoke("Error", "Unable to getItem");
     } catch (Exception e) {
-      error.invoke("Unable to getItem");
+      cb.invoke("Error", "Unable to getItem");
     }
   }
 
@@ -58,35 +58,35 @@ public class RNFastStorageModule extends ReactContextBaseJavaModule {
       MMKV kv = MMKV.defaultMMKV();
       cb.invoke(kv.containsKey(key));
     } catch (Error e) {
-      error.invoke("Unable to check for key");
+      cb.invoke("Error", "Unable to check for key");
     } catch (Exception e) {
-      error.invoke("Unable to check for key");
+      cb.invoke("Error", "Unable to check for key");
     }
   }
 
   @ReactMethod
-  public void removeItem(String key, Callback cb, Callback error) {
+  public void removeItem(String key, Callback cb) {
     try {
       MMKV kv = MMKV.defaultMMKV();
       kv.removeValueForKey(key);
       cb.invoke(key);
     } catch (Error e) {
-      error.invoke("Unable to removeItem");
+      cb.invoke("Error", "Unable to removeItem");
     } catch (Exception e) {
-      error.invoke("Unable to removeItem");
+      cb.invoke("Error", "Unable to removeItem");
     }
   }
 
   @ReactMethod
-  public void clearStore(Callback cb, Callback error) {
+  public void clearStore(Callback cb) {
     try {
       MMKV kv = MMKV.defaultMMKV();
       kv.clearAll();
-      cb.invoke("Done");
+      cb.invoke("Error", "Done");
     } catch (Error e) {
-      error.invoke("Unable to clear store");
+      cb.invoke("Error", "Unable to clear store");
     } catch (Exception e) {
-      error.invoke("Unable to clear store");
+      cb.invoke("Error", "Unable to clear store");
     }
   }
 }
